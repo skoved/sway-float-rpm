@@ -46,6 +46,7 @@ Requires:      sway-systemd
 
 # manpages are written in asciidoc
 BuildRequires: rubygem-asciidoctor
+BuildRequires: systemd-rpm-macros
 
 %description %{common_description}
 
@@ -62,8 +63,8 @@ BuildRequires: rubygem-asciidoctor
 
 %if %{without bootstrap}
 %build
-export LDFLAGS="-X main.version=v0.0.1"
-%gobuild -o %{gobuilddir}/bin/sway-float %{goipath}
+export LDFLAGS="-X main.version=%{tag}"
+%gobuild -o %{gobuilddir}/bin/%{name} %{goipath}
 asciidoctor -b manpage man/*.adoc
 %endif
 
@@ -73,12 +74,21 @@ asciidoctor -b manpage man/*.adoc
 install -m 0755 -vd                                 %{buildroot}%{_bindir}
 install -m 0755 -vp %{gobuilddir}/bin/*             %{buildroot}%{_bindir}/
 install -m 0755 -vd                                 %{buildroot}%{_userunitdir}
-install -m 0644 -vp systemd/user/sway-float.service %{buildroot}%{_userunitdir}/
+install -m 0644 -vp systemd/user/%{name}.service %{buildroot}%{_userunitdir}/
 install -m 0755 -vd                                 %{buildroot}%{_mandir}/man1
-install -m 0644 -vp man/sway-float.1*               %{buildroot}%{_mandir}/man1/
+install -m 0644 -vp man/%{name}.1*               %{buildroot}%{_mandir}/man1/
 install -m 0755 -vd                                 %{buildroot}%{_mandir}/man5
-install -m 0644 -vp man/sway-float.5*               %{buildroot}%{_mandir}/man5/
+install -m 0644 -vp man/%{name}.5*               %{buildroot}%{_mandir}/man5/
 %endif
+
+%post
+%systemd_user_post %{name}.service
+
+%preun
+%systemd_user_preun %{name}.service
+
+%postun
+%systemd_user_postun_with_restart %{name}.service
 
 %if %{without bootstrap}
 %if %{with check}
@@ -91,10 +101,10 @@ install -m 0644 -vp man/sway-float.5*               %{buildroot}%{_mandir}/man5/
 %files
 %license LICENSE
 %doc README.md
-%{_mandir}/man1/sway-float.1*
-%{_mandir}/man5/sway-float.5*
-%{_bindir}/sway-float
-%{_userunitdir}/sway-float.service
+%{_mandir}/man1/%{name}.1*
+%{_mandir}/man5/%{name}.5*
+%{_bindir}/%{name}
+%{_userunitdir}/%{name}.service
 %endif
 
 %gopkgfiles
