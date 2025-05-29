@@ -75,9 +75,9 @@ install -m 0755 -vp %{gobuilddir}/bin/*             %{buildroot}%{_bindir}/
 install -m 0755 -vd                                 %{buildroot}%{_userunitdir}
 install -m 0644 -vp systemd/user/sway-float.service %{buildroot}%{_userunitdir}/
 install -m 0755 -vd                                 %{buildroot}%{_mandir}/man1
-install -m 0644 -vp sway-float.1*                   %{buildroot}%{_mandir}/man1/
+install -m 0644 -vp man/sway-float.1*               %{buildroot}%{_mandir}/man1/
 install -m 0755 -vd                                 %{buildroot}%{_mandir}/man5
-install -m 0644 -vp sway-float.5*                   %{buildroot}%{_mandir}/man5/
+install -m 0644 -vp man/sway-float.5*               %{buildroot}%{_mandir}/man5/
 %endif
 
 %if %{without bootstrap}
